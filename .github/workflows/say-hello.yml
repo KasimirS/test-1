@@ -1,13 +1,11 @@
 name: Create and Push Branch, Then Make PR
 
 on:
-  push:
-    branches:
-      - main
+  pull_request:
+    types: [opened, reopened, syncronize, edited]
 
 permissions: 
-  contents: write
-  pull-requests: write
+  write-all
 
 jobs:
   create-push-pr:
