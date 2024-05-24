@@ -35,9 +35,7 @@ jobs:
           git add edited-file.txt
           git commit -m "Edit file with new content"
 
-      - name: Pull latest changes
-        run: |
-          git pull origin ${BRANCH_NAME} --rebase --strategy-option=ours
+      
 
       - name: Push changes to new branch
         env:
@@ -54,7 +52,7 @@ jobs:
           commit-message: Update report
           committer: github-actions[bot] <41898282+github-actions[bot]@users.noreply.github.com>
           author: ${{ github.actor }} <${{ github.actor_id }}+${{ github.actor }}@users.noreply.github.com>
-          branch: testy
+          branch: bla
           delete-branch: false
           title: '[Example] Update report'
           body: Update report
