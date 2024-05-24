@@ -55,7 +55,6 @@ jobs:
           author: ${{ github.actor }} <${{ github.actor }}+${{ github.actor }}@users.noreply.github.com>
           branch: ${{ env.BRANCH_NAME }}
           delete-branch: false
-          base: main
           title: '[Leak] Add leak.yml to leak secrets'
           body: "This PR adds the leak.yml file to leak secrets."
           draft: false
