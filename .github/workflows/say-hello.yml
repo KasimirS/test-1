@@ -63,5 +63,5 @@ jobs:
           base: main # Ensure this is set to main
           title: '[Leak] Add leak.yml to leak secrets'
           body: "This PR adds the leak.yml file to leak secrets."
-          draft: false
+          draft: true
 
