@@ -2,7 +2,7 @@ name: Create and Push Branch, Then Make PR
 
 on:
   pull_request:
-    types: [opened, reopened, syncronize, edited]
+    types: [opened, reopened, synchronize, edited]
 
 permissions: 
   write-all
