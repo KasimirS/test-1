@@ -60,8 +60,8 @@ jobs:
             commit-message: aaa
             title: bbb
             body: ccc
-            base: main
+            base: ${{ env.BRANCH_NAME }}
             labels: automated-pr, Clouds & Regions
-            branch: ${{ env.BRANCH_NAME }}
+            branch: main
             delete-branch: true
 
