@@ -1,0 +1,14 @@
+name: Say hi
+
+on:
+  pull_request:
+    types: [opened, reopened, syncronize, edited]
+
+jobs:
+  release:
+    name: Say hi
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Say hi
+        run: |
+          echo "hi"
