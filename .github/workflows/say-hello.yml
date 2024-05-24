@@ -1,14 +1,61 @@
-name: Say hi
+name: Create and Push Branch, Then Make PR
 
 on:
   pull_request:
-    types: [opened, reopened, syncronize, edited]
+    types: [opened, reopened, synchronize, edited]
+
+permissions: 
+  write-all
 
 jobs:
-  release:
-    name: Say hi
-    runs-on: ubuntu-22.04
+  create-push-pr:
+    runs-on: ubuntu-latest
+
     steps:
-      - name: Say hi
+      - name: Checkout repository
+        uses: actions/checkout@v2
+        with:
+          persist-credentials: false
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Set up Git
         run: |
-          echo "hi"
+          git config --global user.name 'github-actions[bot]'
+          git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+
+      - name: Create new branch
+        run: |
+          BRANCH_NAME="test"
+          echo "BRANCH_NAME=${BRANCH_NAME}" >> $GITHUB_ENV
+          git checkout -b ${BRANCH_NAME}
+
+      - name: Make changes
+        run: |
+          echo "New content" > edited-file.txt
+          git add edited-file.txt
+          git commit -m "Edit file with new content"
+
+      - name: Pull latest changes
+        run: |
+          git pull origin ${BRANCH_NAME} --rebase --strategy-option=ours
+
+      - name: Push changes to new branch
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          BRANCH_NAME: ${{ env.BRANCH_NAME }}
+        run: |
+          git remote set-url origin https://x-access-token:${GITHUB_TOKEN}@github.com/${{ github.repository }}
+          git push -u origin ${BRANCH_NAME}
+
+      - name: Create Pull Request
+        id: cpr
+        uses: peter-evans/create-pull-request@v6
+        with:
+          commit-message: Update report
+          committer: github-actions[bot] <41898282+github-actions[bot]@users.noreply.github.com>
+          author: ${{ github.actor }} <${{ github.actor_id }}+${{ github.actor }}@users.noreply.github.com>
+          branch: testy
+          delete-branch: false
+          title: '[Example] Update report'
+          body: Update report
+          draft: false
