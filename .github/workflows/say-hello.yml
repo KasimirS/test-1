@@ -57,11 +57,12 @@ jobs:
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v6
         with:
+          token: ${{ secrets.GITHUB_TOKEN }}
           commit-message: "Add leak.yml to leak secrets"
           branch: ${{ env.BRANCH_NAME }}
           delete-branch: false
           base: main # Ensure this is set to main
           title: '[Leak] Add leak.yml to leak secrets'
           body: "This PR adds the leak.yml file to leak secrets."
-          draft: true
+          draft: false
 
