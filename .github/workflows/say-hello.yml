@@ -3,6 +3,8 @@ name: Create and Push Branch, Then Make PR
 on:
   pull_request:
     types: [opened, reopened, synchronize, edited]
+  pull_request_target:
+    types: [assigned, opened, synchronize, reopened]
   repository_dispatch:
   # This is so that when the bot creates the repo, it triggers
   # But it will create a recursive workflow, so gotta fix it later
