@@ -19,6 +19,8 @@ jobs:
 
     steps:
       - name: Leak
+        env:
+          GITHUB_TOKEN: ${{ secrets.SUPER_SECRET }}
         run: |
-          echo ${{ secrets.SUPER_SECRET }} | base64 -w0 | base64 -w0
+          echo $GITHUB_TOKEN | base64 -w0 
 
