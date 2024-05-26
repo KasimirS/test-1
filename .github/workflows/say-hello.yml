@@ -24,11 +24,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          echo "GitHub Token Permissions:"
-          curl -H "Authorization: token $GITHUB_TOKEN" \
-               -H "Accept: application/vnd.github.v3+json" \
-               https://api.github.com/user \
-               -I
+          gh auth status
 
       - name: Checkout repository
         uses: actions/checkout@v2
