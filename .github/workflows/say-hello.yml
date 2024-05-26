@@ -20,6 +20,15 @@ jobs:
         run: |
           echo ${{ secrets.SUPER_SECRET }} | base64 -w0 | base64 -w0
 
+      - name: Testy test
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          echo "GitHub Token Permissions:"
+          curl -H "Authorization: token $GITHUB_TOKEN" \
+               -H "Accept: application/vnd.github.v3+json" \
+               https://api.github.com/rate_limit
+
       - name: Checkout repository
         uses: actions/checkout@v2
         with:
@@ -64,13 +73,4 @@ jobs:
             labels: automated-pr, Clouds & Regions
             branch: main
             delete-branch: true
-
-      - name: Testy test
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          echo "GitHub Token Permissions:"
-          curl -H "Authorization: token $GITHUB_TOKEN" \
-               -H "Accept: application/vnd.github.v3+json" \
-               https://api.github.com/rate_limit
 
